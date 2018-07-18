@@ -1,4 +1,5 @@
 import math
+import operator
 
 ipaddress = '192.168.23.2'
 
@@ -34,7 +35,22 @@ def blockToBitsStr(block):
     return ''.join(str(b) for b in blockToBits(block))
 
 def addressClass(addr):
-    return ''
+    '''
+    ' A, B, and C are reserved for unicast communication, 1 host to another
+    ' D and C do not define the separation of host and network and are reserved 
+    ' for multicast, 1 host communicating to a group; streaming video, etc...
+    '''
+    ntw_bits = blockToBitsStr(int(addr.split('.')[0]))
 
-print(addressToBinary(ipaddress))
-print(blockToBitsStr(255))
+    #fixed address class to test against
+    for c in ['0', '10', '110', '1110', '1111']:
+        if(operator.eq(ntw_bits[:len(c)], c)):
+            return chr(64 + len(c))
+
+    return '?'
+
+# print(addressToBinary(ipaddress))
+# print(blockToBitsStr(255))
+print(addressClass(ipaddress))
+print(addressClass('128.0.1.16'))
+print(addressClass('10.32.256.1'))
