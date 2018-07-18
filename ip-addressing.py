@@ -19,7 +19,7 @@ def addressToBinaryStr(addr):
 
 def blockToBits(block):
     bits = []
-
+    #iterate the 8-bit range and reduce the block
     for power in range(7, -1, -1):
         block_value = math.pow(2, power)
 
@@ -32,6 +32,9 @@ def blockToBits(block):
 
 def blockToBitsStr(block):
     return ''.join(str(b) for b in blockToBits(block))
+
+def addressClass(addr):
+    return ''
 
 print(addressToBinary(ipaddress))
 print(blockToBitsStr(255))
