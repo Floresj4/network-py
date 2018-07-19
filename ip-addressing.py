@@ -1,7 +1,4 @@
-import math
-import operator
-
-ipaddress = '192.168.23.2'
+import math, operator, re
 
 def addressToBinary(addr):
     #handle the values as integers
@@ -16,7 +13,10 @@ def addressToBinary(addr):
     return blocks
 
 def addressToBinaryStr(addr):
-    return ''.join(addressToBinary(addr))
+    #ha... I could so I did
+    return re.sub(r'[\[\]]', '', 
+        '.'.join(re.sub(', ', '', str(block)) 
+            for block in addressToBinary(addr)))
 
 def blockToBits(block):
     bits = []
@@ -49,8 +49,7 @@ def addressClass(addr):
 
     return '?'
 
-# print(addressToBinary(ipaddress))
-# print(blockToBitsStr(255))
-print(addressClass(ipaddress))
-print(addressClass('128.0.1.16'))
-print(addressClass('10.32.256.1'))
+ipaddress = '192.168.23.2'
+print('input IP address: {}'.format(ipaddress))
+print('32 bit address: {}'.format(addressToBinaryStr(ipaddress)))
+print('network address class: {}'.format(addressClass(ipaddress)))
