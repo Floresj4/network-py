@@ -53,3 +53,4 @@ ipaddress = '192.168.23.2'
 print('input IP address: {}'.format(ipaddress))
 print('32 bit address: {}'.format(addressToBinaryStr(ipaddress)))
 print('network address class: {}'.format(addressClass(ipaddress)))
+print('network class range: {}', 'under construction')
