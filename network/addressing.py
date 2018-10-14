@@ -48,16 +48,3 @@ def addressClass(addr):
             return chr(64 + len(c))
 
     return '?'
-
-'''
-private IP address space
-A: 10.0.0.0     10.255.255.255
-B: 172.16.0.0   172.16.31.255
-C: 192.168.0.0  192.168.255.255
-'''
-
-ipaddress = '192.168.23.2'
-print('input IP address: {}'.format(ipaddress))
-print('32 bit address: {}'.format(addressToBinaryStr(ipaddress)))
-print('network address class: {}'.format(addressClass(ipaddress)))
-print('network class range: {}', 'under construction')
