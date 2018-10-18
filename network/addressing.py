@@ -48,3 +48,19 @@ def addressClass(addr):
             return chr(64 + len(c))
 
     return '?'
+
+'''
+Expand Classless Inter-Domain Routing notation into
+a starting and ending IP address.
+@param cidr - 192.168.1.1/32
+'''
+def expandCIDRRange(notation):
+    tmp = notation.split('/')
+    ip = tmp[0]
+    mask = tmp[1]
+    return {
+        'ip': ip,
+        'mask': mask,
+        'address_class': addressClass(ip),
+        'address_bits': addressToBinaryStr(ip)
+    }
