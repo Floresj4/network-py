@@ -27,7 +27,19 @@ class TestIpAddressing(unittest.TestCase):
         '''
 
     def test_cidr_notation(self):
+
+        #assert some error scenarios
+        with(self.assertRaises(Exception)):
+            expandCIDRRange('1.2.3.4/')
+
+        with(self.assertRaises(Exception)):
+            expandCIDRRange('1.2.3.4/-1')
+
+        with(self.assertRaises(Exception)):
+            expandCIDRRange('1.2.3.4/33')
+
         test_notation = '192.168.23.2/32'
+        print('test_cidr_notation: {}'.format(test_notation))
         print(expandCIDRRange(test_notation))
 
 if __name__ == '__main__':

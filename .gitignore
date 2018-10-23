@@ -1,3 +1,6 @@
 .vscode
 env/
-**.pyc
+/__pycache__
+*.pyo
+*.pyc
+src/*.egg-info

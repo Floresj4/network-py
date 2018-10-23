@@ -56,11 +56,23 @@ a starting and ending IP address.
 '''
 def expandCIDRRange(notation):
     tmp = notation.split('/')
+
+    if(len(tmp) is not 2):
+        raise('Ensure your cidr is in the form a.b.c.d/n')
+
     ip = tmp[0]
-    mask = tmp[1]
+    network = 0
+
+    try:
+        network = int(tmp[1])
+        if(network < 0 or network > 32):
+            raise Exception('The network prefix must be a valid integer between 0 and 32')
+    except:
+        raise Exception('An error occured managing the network prefix.  Ensure your cidr is in the form a.b.c.d/n')
+
     return {
-        'ip': ip,
-        'mask': mask,
+        'significant_bits': ip,
+        'network_prefix': network,
         'address_class': addressClass(ip),
         'address_bits': addressToBinaryStr(ip)
     }
