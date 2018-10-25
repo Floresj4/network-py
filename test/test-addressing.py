@@ -1,5 +1,6 @@
 import sys
 import unittest
+import json
 
 sys.path.append('../')
 
@@ -40,7 +41,9 @@ class TestIpAddressing(unittest.TestCase):
 
         test_notation = '192.168.23.2/32'
         print('test_cidr_notation: {}'.format(test_notation))
-        print(expandCIDRRange(test_notation))
+        print(json.dumps(
+            expandCIDRRange(test_notation),
+            indent = 4))
 
 if __name__ == '__main__':
     unittest.main()

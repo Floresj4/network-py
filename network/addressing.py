@@ -1,5 +1,7 @@
 import math, operator, re
 
+from math import floor
+
 def addressToBinary(addr):
     #handle the values as integers
     blocks = [int(x) for x in addr.split('.')]
@@ -60,19 +62,27 @@ def expandCIDRRange(notation):
     if(len(tmp) is not 2):
         raise('Ensure your cidr is in the form a.b.c.d/n')
 
-    ip = tmp[0]
-    network = 0
+    ip = tmp[0]     #ipv4 address
+    network = 0     #prefix length, the number of shared initial bits
 
     try:
         network = int(tmp[1])
-        if(network < 0 or network > 32):
+        if network < 0 or network > 32:
             raise Exception('The network prefix must be a valid integer between 0 and 32')
     except:
-        raise Exception('An error occured managing the network prefix.  Ensure your cidr is in the form a.b.c.d/n')
+        raise Exception('{} {}'.format('An error occured managing the network prefix.'
+            , 'Ensure your cidr is in the form a.b.c.d/n'))
+
+    #use the address to get bits for mask
+    abits = addressToBinary(tmp[0])
+    start = floor(network / 8) - 1
+    abits = []
 
     return {
         'significant_bits': ip,
         'network_prefix': network,
         'address_class': addressClass(ip),
-        'address_bits': addressToBinaryStr(ip)
+        'address_bits': addressToBinaryStr(ip),
+        'abits': ''.join(str(b) for b in abits),
+        'start': start
     }
