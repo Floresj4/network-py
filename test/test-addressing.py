@@ -39,7 +39,7 @@ class TestIpAddressing(unittest.TestCase):
         with(self.assertRaises(Exception)):
             expandCIDRRange('1.2.3.4/33')
 
-        test_notation = '192.168.23.2/32'
+        test_notation = '192.168.0.0/22'
         print('test_cidr_notation: {}'.format(test_notation))
         print(json.dumps(
             expandCIDRRange(test_notation),
