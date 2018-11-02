@@ -65,25 +65,31 @@ class Addressing(object):
             raise('Ensure your cidr is in the form a.b.c.d/n')
 
         ip = tmp[0]     #ipv4 address
-        network = 0     #prefix length, the number of shared initial bits
+        #validate and translate, the number of shared initial bits
+        subnet = self.__validate(ip, tmp[1])
 
-        try:
-            network = int(tmp[1])
-            if network < 0 or network > 32:
-                raise Exception('The network prefix must be a valid integer between 0 and 32')
-        except:
-            raise Exception('{} {}'.format('An error occured managing the network prefix.'
-                , 'Ensure your cidr is in the form a.b.c.d/n'))
-
-        #use the address to get bits for mask
-        abits = []
-        for b in self.addressToBinary(tmp[0]):
+        start = floor(subnet / 8)
+        abits = []  #use the address to get bits for mask
+        for i, b in enumerate(self.addressToBinary(tmp[0])):
+            for j in range(0, len(b)):
+                bit_pos = (8 * i + j)
             abits += b
 
         return {
             'significant_bits': ip,
-            'network_prefix': network,
+            'network_prefix': subnet,
             'address_class': self.addressClass(ip),
             'address_bits': self.addressToBinaryStr(ip),
             'abits': ''.join(str(b) for b in abits)
         }
+
+    def __validate(self, ip, subnet):
+        try:
+            subnet = int(subnet)
+            if subnet < 0 or subnet > 32:
+                raise Exception('The network prefix must be a valid integer between 0 and 32')
+            
+            return subnet
+        except:
+            raise Exception('{} {}'.format('An error occured managing the network prefix.'
+                , 'Ensure your cidr is in the form a.b.c.d/n'))
