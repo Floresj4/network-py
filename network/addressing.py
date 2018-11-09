@@ -69,20 +69,32 @@ class Addressing(object):
         subnet = self.__validate(ip, tmp[1])
 
         start = floor(subnet / 8)
-        abits = []  #use the address to get bits for mask
-        for i, b in enumerate(self.addressToBinary(tmp[0])):
-            for j in range(0, len(b)):
-                bit_pos = (8 * i + j)
-            abits += b
+        sbits = []
+        ebits = []
+        for i, bt in enumerate(self.addressToBinary(tmp[0])):
+            for j in range(0, len(bt)):
+                
+                #current bit to look at
+                bit_pos = ((8 * i) + j)
+                if bit_pos == subnet:
+                    print('start at ' + str(bit_pos) + ' ' + str(8 * (i + 1)))
+                #     print('{}, {}'.format(i, bit_pos))
+                #     print((8 * (i + 1)) - bit_pos)
 
+            sbits += bt
+        
         return {
             'significant_bits': ip,
             'network_prefix': subnet,
             'address_class': self.addressClass(ip),
             'address_bits': self.addressToBinaryStr(ip),
-            'abits': ''.join(str(b) for b in abits)
+            'abits': ''.join(str(b) for b in sbits)
         }
 
+    '''
+    validate the ip address and subnet values
+    and raise exceptions accordingly
+    '''
     def __validate(self, ip, subnet):
         try:
             subnet = int(subnet)
@@ -93,3 +105,14 @@ class Addressing(object):
         except:
             raise Exception('{} {}'.format('An error occured managing the network prefix.'
                 , 'Ensure your cidr is in the form a.b.c.d/n'))
+
+'''
+base 2 exponential factorial; did I just make
+that up?!  Outside addressing class to be
+independently testable
+'''
+def qckmafs(start):
+    if start > 0:
+        out = math.pow(2, start) + qckmafs(start - 1)
+    else: return math.pow(2, start)
+    return out

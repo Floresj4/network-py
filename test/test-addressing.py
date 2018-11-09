@@ -5,6 +5,7 @@ import json
 sys.path.append('../')
 
 from network.addressing import Addressing
+from network.addressing import qckmafs
 
 class TestIpAddressing(unittest.TestCase):
     def Setup(self):
@@ -41,8 +42,14 @@ class TestIpAddressing(unittest.TestCase):
         test_notation = '192.168.0.0/22'
         print('test_cidr_notation: {}'.format(test_notation))
         print(json.dumps(
-            addressing.expandCIDRRange(test_notation),
-            indent = 4))
+            addressing.expandCIDRRange(test_notation)))
+
+    def test_qckmafs(self):
+        self.assertEqual(1, qckmafs(0))
+        self.assertEqual(3, qckmafs(1))
+        self.assertEqual(7, qckmafs(2))
+        self.assertEqual(15, qckmafs(3))
+        self.assertEqual(255, qckmafs(7))
 
 if __name__ == '__main__':
     unittest.main()
