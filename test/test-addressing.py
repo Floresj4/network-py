@@ -39,10 +39,21 @@ class TestIpAddressing(unittest.TestCase):
         with(self.assertRaises(Exception)):
             addressing.expandCIDRRange('1.2.3.4/33')
 
-        test_notation = '192.168.0.0/22'
+        # test_notation = '172.16.180.7/23'
+        # print('test_cidr_notation: {}'.format(test_notation))
+        # addressing.expandCIDRRange(test_notation)
+        # print(json.dumps(addressing.expandCIDRRange(test_notation)))
+
+        test_notation = '198.51.100.81/27'
         print('test_cidr_notation: {}'.format(test_notation))
-        print(json.dumps(
-            addressing.expandCIDRRange(test_notation)))
+        addressing.expandCIDRRange(test_notation)
+        # print(json.dumps(addressing.expandCIDRRange(test_notation)))
+
+    def test_bits_to_decimal(self):
+        addressing = Addressing()
+
+        test_bit = [char for char in '10000000']
+        self.assertEqual(128, addressing.bitsToDecimal(test_bit))
 
     def test_qckmafs(self):
         self.assertEqual(1, qckmafs(0))

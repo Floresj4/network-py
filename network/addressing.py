@@ -22,6 +22,19 @@ class Addressing(object):
             '.'.join(re.sub(', ', '', str(block)) 
                 for block in self.addressToBinary(addr)))
 
+    def bitsToDecimal(self, bits):
+        if bits == []:
+            return 0
+        elif len(bits) != 8:
+            raise Exception("8 bits are required to produce a proper octet.")
+
+        decimal = 0
+        for i in range(0, 7):
+            if bits[i] == '1' or bits[i] == 1:
+                decimal += math.pow(2, abs(7 - i))
+        
+        return decimal
+
     def blockToBits(self, block):
         bits = []
         #iterate the 8-bit range and reduce the block
@@ -68,21 +81,40 @@ class Addressing(object):
         #validate and translate, the number of shared initial bits
         subnet = self.__validate(ip, tmp[1])
 
-        start = floor(subnet / 8)
+        #this to remember
+        #total hosts - 2^n - 2, two addresses reserved (first and last)
+        #for the network and broadcast ID 
         sbits = []
-        ebits = []
-        for i, bt in enumerate(self.addressToBinary(tmp[0])):
-            for j in range(0, len(bt)):
-                
-                #current bit to look at
-                bit_pos = ((8 * i) + j)
-                if bit_pos == subnet:
-                    print('start at ' + str(bit_pos) + ' ' + str(8 * (i + 1)))
-                #     print('{}, {}'.format(i, bit_pos))
-                #     print((8 * (i + 1)) - bit_pos)
+        # ebits = []
+        # subnet_found = False
+        # for i, bt in enumerate(self.addressToBinary(tmp[0])):
+        #     for j in range(0, len(bt)):
+        #         #current bit to look at
+        #         bit_pos = ((8 * i) + j)
+        #         if bit_pos == subnet:
+        #             subnet_found = True
+        #             ebits.append(qckmafs((8 * (i + 1)) - bit_pos))
+        #         else:
+        #             sbits.append(qckmafs(7))
 
-            sbits += bt
-        
+        # print(sbits)
+        # print(ebits)
+        print('subnet: ' + str(subnet))
+
+        #account for array offset; -1
+        octet_start = floor(subnet / 8)
+        print('octet start: ' + str(octet_start))
+
+        masked_bits = subnet - (8 * (octet_start))
+        print('masked bits: ' + str(masked_bits))
+
+        for i, curr_bits in enumerate(self.addressToBinary(tmp[0])):
+            if i != octet_start:
+                sbits.append(self.bitsToDecimal(curr_bits))
+            else:
+                sbits.append(qckmafs(8 - masked_bits - 1))
+
+        print(sbits)
         return {
             'significant_bits': ip,
             'network_prefix': subnet,
