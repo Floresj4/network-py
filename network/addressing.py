@@ -114,6 +114,9 @@ class Addressing(object):
                 address = qckmafs(8 - masked_bits - 1)
                 net_start.append(address)
                 net_end.append(255)
+                subnet_mask.append(qckmafs(7, 7 - masked_bits + 1))
+            
+
 
         print('network start: ' + '.'.join(str(s) for s in net_start))
         print('network end: ' + '.'.join(str(e) for e in net_end))
@@ -124,7 +127,9 @@ class Addressing(object):
             'network_prefix': subnet,
             'address_class': self.addressClass(ip),
             'address_bits': self.addressToBinaryStr(ip),
-            'network_start': ''.join(str(b) for b in net_start)
+            'network_start': '.'.join(str(b) for b in net_start),
+            'network end: ': '.'.join(str(e) for e in net_end),
+            'subnet mask: ': '.'.join(str(m) for m in subnet_mask)
         }
 
     '''
@@ -147,8 +152,8 @@ base 2 exponential factorial; did I just make
 that up?!  Outside addressing class to be
 independently testable
 '''
-def qckmafs(start):
-    if start > 0:
-        out = math.pow(2, start) + qckmafs(start - 1)
+def qckmafs(start, stop = 0):
+    if start > stop:
+        out = math.pow(2, start) + qckmafs(start - 1, stop)
     else: return math.pow(2, start)
-    return out
+    return int(out)

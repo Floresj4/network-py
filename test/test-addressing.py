@@ -47,7 +47,8 @@ class TestIpAddressing(unittest.TestCase):
         test_notation = '198.51.100.81/27'
         print('test_cidr_notation: {}'.format(test_notation))
         addressing.expandCIDRRange(test_notation)
-        # print(json.dumps(addressing.expandCIDRRange(test_notation)))
+        print(json.dumps(addressing.expandCIDRRange(test_notation),
+            indent = 4))
 
     def test_bits_to_decimal(self):
         addressing = Addressing()
@@ -61,6 +62,7 @@ class TestIpAddressing(unittest.TestCase):
         self.assertEqual(7, qckmafs(2))
         self.assertEqual(15, qckmafs(3))
         self.assertEqual(255, qckmafs(7))
+        self.assertEqual(128, qckmafs(7, 7))
 
 if __name__ == '__main__':
     unittest.main()
