@@ -31,7 +31,7 @@ class Addressing(object):
         decimal = 0
         for i in range(0, 7):
             if bits[i] == '1' or bits[i] == 1:
-                decimal += math.pow(2, abs(7 - i))
+                decimal += int(math.pow(2, abs(7 - i)))
         
         return decimal
 
@@ -81,24 +81,10 @@ class Addressing(object):
         #validate and translate, the number of shared initial bits
         subnet = self.__validate(ip, tmp[1])
 
-        #this to remember
+        #things to remember
         #total hosts - 2^n - 2, two addresses reserved (first and last)
         #for the network and broadcast ID 
-        sbits = []
-        # ebits = []
-        # subnet_found = False
-        # for i, bt in enumerate(self.addressToBinary(tmp[0])):
-        #     for j in range(0, len(bt)):
-        #         #current bit to look at
-        #         bit_pos = ((8 * i) + j)
-        #         if bit_pos == subnet:
-        #             subnet_found = True
-        #             ebits.append(qckmafs((8 * (i + 1)) - bit_pos))
-        #         else:
-        #             sbits.append(qckmafs(7))
 
-        # print(sbits)
-        # print(ebits)
         print('subnet: ' + str(subnet))
 
         #account for array offset; -1
@@ -108,19 +94,37 @@ class Addressing(object):
         masked_bits = subnet - (8 * (octet_start))
         print('masked bits: ' + str(masked_bits))
 
+        net_start = []
+        net_end = []
+        subnet_mask = []
+        range_started = False
+
         for i, curr_bits in enumerate(self.addressToBinary(tmp[0])):
             if i != octet_start:
-                sbits.append(self.bitsToDecimal(curr_bits))
+                if not range_started:
+                    address = self.bitsToDecimal(curr_bits)
+                    net_start.append(address)
+                    subnet_mask.append(255)
+                    net_end.append(address)
+                else:
+                    net_start.append(255)
+                    net_end.append(255)
             else:
-                sbits.append(qckmafs(8 - masked_bits - 1))
+                range_started = True
+                address = qckmafs(8 - masked_bits - 1)
+                net_start.append(address)
+                net_end.append(255)
 
-        print(sbits)
+        print('network start: ' + '.'.join(str(s) for s in net_start))
+        print('network end: ' + '.'.join(str(e) for e in net_end))
+        print('subnet mask: ' + '.'.join(str(m) for m in subnet_mask))
+
         return {
             'significant_bits': ip,
             'network_prefix': subnet,
             'address_class': self.addressClass(ip),
             'address_bits': self.addressToBinaryStr(ip),
-            'abits': ''.join(str(b) for b in sbits)
+            'network_start': ''.join(str(b) for b in net_start)
         }
 
     '''
